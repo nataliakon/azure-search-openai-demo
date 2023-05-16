@@ -3,10 +3,28 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentName": {
-      "value": "${AZURE_ENV_NAME}"
+      "value": "azmin25"
     },
     "location": {
-      "value": "${AZURE_LOCATION}"
+      "value": "canadacentral"
+    },
+    "existingNetworkSubscriptionId": {
+      "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
+    },
+    "existingNetworkName":{
+      "value": "data-vnet"
+    },
+    "existingNetworkResourceGroupName": {
+      "value": "rg-hub-networking"
+    },
+    "existingPrivateEndpointSubnetName": {
+      "value": "private-endpoint-subnet"
+    },
+    "existingPrivateDnsSubscriptionId": {
+      "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
+    },
+    "existingPrivateDnsRgName": {
+      "value": "rg-dns"
     },
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
