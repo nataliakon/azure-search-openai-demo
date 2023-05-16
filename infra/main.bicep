@@ -182,7 +182,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = if (deployFormsRecogni
       name: formRecognizerSkuName
     }
     PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
-    PrivateDnsZoneResourceGroupId: '${varPrivateDnsZoneResourceGroupId}.privatelink.cognitiveservices.azure.com'
+    PrivateDnsZoneResourceGroupId: '${varPrivateDnsZoneResourceGroupId}privatelink.cognitiveservices.azure.com'
   }
 }
 
