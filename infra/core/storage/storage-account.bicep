@@ -74,7 +74,7 @@ module blob_storage_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' 
     customNetworkInterfaceName: '${storage.name}-pe-nic'
     privateDnsZoneGroup: {
       privateDNSResourceIds: [
-        '${PrivateDnsZoneResourceGroupId}/privatelink.blob.core.windows.net'
+        '${PrivateDnsZoneResourceGroupId}privatelink.blob.core.windows.net'
       ]
     }
   }
