@@ -32,7 +32,7 @@ resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
     }
     hostingMode: 'default'
     networkRuleSet: {
-      bypass: 'None'
+      bypass: 'AzurePortal'
       ipRules: []
     }
     partitionCount: 1
@@ -47,7 +47,7 @@ resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
 // private endpoints 
 
 module  cognitive_service_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
-  name: 'Deploy-${search.name}-pe-${name}-${time}'
+  name: substring('Deploy-${search.name}-pe-${name}-${time}',0,65)
   params: {
     tags:tags
     groupIds: [
