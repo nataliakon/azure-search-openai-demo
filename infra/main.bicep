@@ -75,19 +75,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
+resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName) && deployOpenAiService) {
   name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
 }
 
-resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(formRecognizerResourceGroupName)) {
+resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(formRecognizerResourceGroupName) && deployFormsRecognizer) {
   name: !empty(formRecognizerResourceGroupName) ? formRecognizerResourceGroupName : resourceGroup.name
 }
 
-resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName)) {
+resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName) && deploySearchService) {
   name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
 }
 
-resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName)) {
+resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName) && deployStorage) {
   name: !empty(storageResourceGroupName) ? storageResourceGroupName : resourceGroup.name
 }
 
@@ -229,7 +229,7 @@ module storage 'core/storage/storage-account.bicep' = if (deployStorage) {
 }
 
 // USER ROLES
-module openAiRoleUser 'core/security/role.bicep' = {
+module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService) {
   scope: openAiResourceGroup
   name: 'openai-role-user'
   params: {
@@ -239,7 +239,7 @@ module openAiRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module formRecognizerRoleUser 'core/security/role.bicep' = {
+module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecognizer) {
   scope: formRecognizerResourceGroup
   name: 'formrecognizer-role-user'
   params: {
@@ -249,7 +249,7 @@ module formRecognizerRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module storageRoleUser 'core/security/role.bicep' = {
+module storageRoleUser 'core/security/role.bicep' = if (deployStorage) {
   scope: storageResourceGroup
   name: 'storage-role-user'
   params: {
@@ -259,7 +259,7 @@ module storageRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module storageContribRoleUser 'core/security/role.bicep' = {
+module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage) {
   scope: storageResourceGroup
   name: 'storage-contribrole-user'
   params: {
@@ -269,7 +269,7 @@ module storageContribRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module searchRoleUser 'core/security/role.bicep' = {
+module searchRoleUser 'core/security/role.bicep' = if (deploySearchService) {
   scope: searchServiceResourceGroup
   name: 'search-role-user'
   params: {
@@ -279,7 +279,7 @@ module searchRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module searchContribRoleUser 'core/security/role.bicep' = {
+module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchService) {
   scope: searchServiceResourceGroup
   name: 'search-contrib-role-user'
   params: {
@@ -290,7 +290,7 @@ module searchContribRoleUser 'core/security/role.bicep' = {
 }
 
 // SYSTEM IDENTITIES
-module openAiRoleBackend 'core/security/role.bicep' = {
+module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService) {
   scope: openAiResourceGroup
   name: 'openai-role-backend'
   params: {
@@ -300,7 +300,7 @@ module openAiRoleBackend 'core/security/role.bicep' = {
   }
 }
 
-module storageRoleBackend 'core/security/role.bicep' = {
+module storageRoleBackend 'core/security/role.bicep' = if (deployStorage) {
   scope: storageResourceGroup
   name: 'storage-role-backend'
   params: {
@@ -310,7 +310,7 @@ module storageRoleBackend 'core/security/role.bicep' = {
   }
 }
 
-module searchRoleBackend 'core/security/role.bicep' = {
+module searchRoleBackend 'core/security/role.bicep' = if (deploySearchService) {
   scope: searchServiceResourceGroup
   name: 'search-role-backend'
   params: {
