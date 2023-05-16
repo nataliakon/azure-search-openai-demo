@@ -93,117 +93,117 @@ resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' ex
 }
 
 // Create an App Service Plan to group applications under the same payment plan and SKU
-module appServicePlan 'core/host/appserviceplan.bicep' = if (deployWebApp) {
-  name: 'appserviceplan'
-  scope: resourceGroup
-  params: {
-    name: !empty(appServicePlanName) ? appServicePlanName : '${abbrs.webServerFarms}${resourceToken}'
-    location: location
-    tags: tags
-    sku: {
-      name: 'B1'
-      capacity: 1
-    }
-    kind: 'linux'
-  }
-}
+// module appServicePlan 'core/host/appserviceplan.bicep' = if (deployWebApp) {
+//   name: 'appserviceplan'
+//   scope: resourceGroup
+//   params: {
+//     name: !empty(appServicePlanName) ? appServicePlanName : '${abbrs.webServerFarms}${resourceToken}'
+//     location: location
+//     tags: tags
+//     sku: {
+//       name: 'B1'
+//       capacity: 1
+//     }
+//     kind: 'linux'
+//   }
+// }
 
-// The application frontend
-module backend 'core/host/appservice.bicep' = if (deployWebApp) {
-  name: 'web'
-  scope: resourceGroup
-  params: {
-    name: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
-    location: location
-    tags: union(tags, { 'azd-service-name': 'backend' })
-    appServicePlanId: appServicePlan.outputs.id
-    runtimeName: 'python'
-    runtimeVersion: '3.10'
-    scmDoBuildDuringDeployment: true
-    managedIdentity: true
-    appSettings: {
-      AZURE_STORAGE_ACCOUNT: storage.outputs.name
-      AZURE_STORAGE_CONTAINER: storageContainerName
-      AZURE_OPENAI_SERVICE: openAi.outputs.name
-      AZURE_SEARCH_INDEX: searchIndexName
-      AZURE_SEARCH_SERVICE: searchService.outputs.name
-      AZURE_OPENAI_GPT_DEPLOYMENT: gptDeploymentName
-      AZURE_OPENAI_CHATGPT_DEPLOYMENT: chatGptDeploymentName
-    }
-  }
-}
+// // The application frontend
+// module backend 'core/host/appservice.bicep' = if (deployWebApp) {
+//   name: 'web'
+//   scope: resourceGroup
+//   params: {
+//     name: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
+//     location: location
+//     tags: union(tags, { 'azd-service-name': 'backend' })
+//     appServicePlanId: appServicePlan.outputs.id
+//     runtimeName: 'python'
+//     runtimeVersion: '3.10'
+//     scmDoBuildDuringDeployment: true
+//     managedIdentity: true
+//     appSettings: {
+//       AZURE_STORAGE_ACCOUNT: storage.outputs.name
+//       AZURE_STORAGE_CONTAINER: storageContainerName
+//       AZURE_OPENAI_SERVICE: openAi.outputs.name
+//       AZURE_SEARCH_INDEX: searchIndexName
+//       AZURE_SEARCH_SERVICE: searchService.outputs.name
+//       AZURE_OPENAI_GPT_DEPLOYMENT: gptDeploymentName
+//       AZURE_OPENAI_CHATGPT_DEPLOYMENT: chatGptDeploymentName
+//     }
+//   }
+// }
 
-module openAi 'core/ai/cognitiveservices.bicep' = if (deployOpenAiService) {
-  name: 'openai'
-  scope: openAiResourceGroup
-  params: {
-    name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
-    location: openAiResourceGroupLocation
-    tags: tags
-    sku: {
-      name: openAiSkuName
-    }
-    deployments: [
-      {
-        name: gptDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: gptModelName
-          version: '1'
-        }
-        scaleSettings: {
-          scaleType: 'Standard'
-        }
-      }
-      {
-        name: chatGptDeploymentName
-        model: {
-          format: 'OpenAI'
-          name: chatGptModelName
-          version: '0301'
-        }
-        scaleSettings: {
-          scaleType: 'Standard'
-        }
-      }
-    ]
-  }
-}
+// module openAi 'core/ai/cognitiveservices.bicep' = if (deployOpenAiService) {
+//   name: 'openai'
+//   scope: openAiResourceGroup
+//   params: {
+//     name: !empty(openAiServiceName) ? openAiServiceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+//     location: openAiResourceGroupLocation
+//     tags: tags
+//     sku: {
+//       name: openAiSkuName
+//     }
+//     deployments: [
+//       {
+//         name: gptDeploymentName
+//         model: {
+//           format: 'OpenAI'
+//           name: gptModelName
+//           version: '1'
+//         }
+//         scaleSettings: {
+//           scaleType: 'Standard'
+//         }
+//       }
+//       {
+//         name: chatGptDeploymentName
+//         model: {
+//           format: 'OpenAI'
+//           name: chatGptModelName
+//           version: '0301'
+//         }
+//         scaleSettings: {
+//           scaleType: 'Standard'
+//         }
+//       }
+//     ]
+//   }
+// }
 
-module formRecognizer 'core/ai/cognitiveservices.bicep' = if (deployFormsRecognizer) {
-  name: 'formrecognizer'
-  scope: formRecognizerResourceGroup
-  params: {
-    name: !empty(formRecognizerServiceName) ? formRecognizerServiceName : '${abbrs.cognitiveServicesFormRecognizer}${resourceToken}'
-    kind: 'FormRecognizer'
-    location: formRecognizerResourceGroupLocation
-    tags: tags
-    sku: {
-      name: formRecognizerSkuName
-    }
-    PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
-    PrivateDnsZoneResourceGroupId: 'varPrivateDnsZoneResourceGroupId.'
-  }
-}
+// module formRecognizer 'core/ai/cognitiveservices.bicep' = if (deployFormsRecognizer) {
+//   name: 'formrecognizer'
+//   scope: formRecognizerResourceGroup
+//   params: {
+//     name: !empty(formRecognizerServiceName) ? formRecognizerServiceName : '${abbrs.cognitiveServicesFormRecognizer}${resourceToken}'
+//     kind: 'FormRecognizer'
+//     location: formRecognizerResourceGroupLocation
+//     tags: tags
+//     sku: {
+//       name: formRecognizerSkuName
+//     }
+//     PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
+//     PrivateDnsZoneResourceGroupId: 'varPrivateDnsZoneResourceGroupId.'
+//   }
+// }
 
-module searchService 'core/search/search-services.bicep' = if (deploySearchService) {
-  name: 'search-service'
-  scope: searchServiceResourceGroup
-  params: {
-    name: !empty(searchServiceName) ? searchServiceName : 'gptkb-${resourceToken}'
-    location: searchServiceResourceGroupLocation
-    tags: tags
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
-    sku: {
-      name: searchServiceSkuName
-    }
-    semanticSearch: 'free'
-  }
-}
+// module searchService 'core/search/search-services.bicep' = if (deploySearchService) {
+//   name: 'search-service'
+//   scope: searchServiceResourceGroup
+//   params: {
+//     name: !empty(searchServiceName) ? searchServiceName : 'gptkb-${resourceToken}'
+//     location: searchServiceResourceGroupLocation
+//     tags: tags
+//     authOptions: {
+//       aadOrApiKey: {
+//         aadAuthFailureMode: 'http401WithBearerChallenge'
+//       }
+//     }
+//     sku: {
+//       name: searchServiceSkuName
+//     }
+//     semanticSearch: 'free'
+//   }
+// }
 
 module storage 'core/storage/storage-account.bicep' = if (deployStorage) {
   name: 'storage'
@@ -327,21 +327,21 @@ output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
-output AZURE_OPENAI_SERVICE string = openAi.outputs.name
+//output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_GPT_DEPLOYMENT string = gptDeploymentName
 output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = chatGptDeploymentName
 
-output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
+//output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
 
 output AZURE_SEARCH_INDEX string = searchIndexName
-output AZURE_SEARCH_SERVICE string = searchService.outputs.name
+//output AZURE_SEARCH_SERVICE string = searchService.outputs.name
 output AZURE_SEARCH_SERVICE_RESOURCE_GROUP string = searchServiceResourceGroup.name
 
 output AZURE_STORAGE_ACCOUNT string = storage.outputs.name
 output AZURE_STORAGE_CONTAINER string = storageContainerName
 output AZURE_STORAGE_RESOURCE_GROUP string = storageResourceGroup.name
 
-output BACKEND_URI string = backend.outputs.uri
+//output BACKEND_URI string = backend.outputs.uri
 output environmentOutput object = environment().suffixes
