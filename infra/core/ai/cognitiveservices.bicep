@@ -2,6 +2,9 @@ param name string
 param location string = resourceGroup().location
 param tags object = {}
 
+param PrivateEndPointSubnetId string = ''
+param PrivateDnsZoneResourceGroupId string = ''
+
 param customSubDomainName string = name
 param deployments array = []
 param kind string = 'OpenAI'
@@ -9,6 +12,9 @@ param publicNetworkAccess string = 'Enabled'
 param sku object = {
   name: 'S0'
 }
+
+@description('Do not modify, used to set unique value for resource deployment.')
+param time string = utcNow()
 
 resource account 'Microsoft.CognitiveServices/accounts@2022-10-01' = {
   name: name
@@ -32,6 +38,27 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2022-10-01
     scaleSettings: deployment.scaleSettings
   }
 }]
+
+// private endpoints 
+
+module  cognitive_service_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+  name: 'Deploy-blob-pe-${name}-${time}'
+  params: {
+    tags:tags
+    groupIds: [
+      'account'
+    ]
+    name: '${account.name}-pe'
+    serviceResourceId: account.id
+    subnetResourceId: PrivateEndPointSubnetId
+    customNetworkInterfaceName: '${account.name}-pe-nic'
+    privateDnsZoneGroup: {
+      privateDNSResourceIds: [
+        '${PrivateDnsZoneResourceGroupId}'
+      ]
+    }
+  }
+}
 
 output endpoint string = account.properties.endpoint
 output id string = account.id

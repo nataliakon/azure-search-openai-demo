@@ -65,6 +65,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
 module blob_storage_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
   name: 'Deploy-blob-pe-${name}-${time}'
   params: {
+    tags:tags
     groupIds: [
       'blob'
     ]
@@ -74,7 +75,7 @@ module blob_storage_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' 
     customNetworkInterfaceName: '${storage.name}-pe-nic'
     privateDnsZoneGroup: {
       privateDNSResourceIds: [
-        '${PrivateDnsZoneResourceGroupId}privatelink.blob.core.windows.net'
+        '${PrivateDnsZoneResourceGroupId}privatelink.blob.${environment().suffixes.storage}'
       ]
     }
   }
