@@ -23,7 +23,7 @@ param backendServiceName string = ''
 param resourceGroupName string = ''
 
 
-param deploySearchService bool = false
+param deploySearchService bool = true
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -202,6 +202,8 @@ module searchService 'core/search/search-services.bicep' = if (deploySearchServi
       name: searchServiceSkuName
     }
     semanticSearch: 'free'
+    PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
+    PrivateDnsZoneResourceGroupId: '${varPrivateDnsZoneResourceGroupId}privatelink.search.windows.net'
   }
 }
 

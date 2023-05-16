@@ -8,7 +8,7 @@ param PrivateDnsZoneResourceGroupId string = ''
 param customSubDomainName string = name
 param deployments array = []
 param kind string = 'OpenAI'
-param publicNetworkAccess string = 'Enabled'
+param publicNetworkAccess string = 'Disabled'
 param sku object = {
   name: 'S0'
 }
@@ -42,7 +42,7 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2022-10-01
 // private endpoints 
 
 module  cognitive_service_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
-  name: 'Deploy-blob-pe-${name}-${time}'
+  name: 'Deploy-${account.name}-pe-${name}-${time}'
   params: {
     tags:tags
     groupIds: [
