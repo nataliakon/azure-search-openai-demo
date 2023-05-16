@@ -47,7 +47,7 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2022-10-01
 // private endpoints 
 
 module  cognitive_service_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
-  name: 'Deploy-${account.name}-pe-${name}-${time}'
+  name: substring('Deploy-${account.name}-pe-${time}',0,63)
   params: {
     tags:tags
     groupIds: [
