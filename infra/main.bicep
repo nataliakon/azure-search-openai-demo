@@ -9,10 +9,21 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
+param existingNetworkSubscriptionId string = ''
+param existingNetworkName string = ''
+param existingNetworkResourceGroupName string =''
+param existingPrivateEndpointSubnetName string = ''
+
+param existingPrivateDnsSubscriptionId string = ''
+param existingPrivateDnsRgName string = ''
+
+param deployWebApp bool = false
 param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
 
+
+param deploySearchService bool = false
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -25,12 +36,14 @@ param storageResourceGroupName string = ''
 param storageResourceGroupLocation string = location
 param storageContainerName string = 'content'
 
+param deployOpenAiService bool = false
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
 param openAiResourceGroupLocation string = location
 
 param openAiSkuName string = 'S0'
 
+param deployFormsRecognizer bool = false
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
@@ -42,12 +55,18 @@ param gptModelName string = 'text-davinci-003'
 param chatGptDeploymentName string = 'chat'
 param chatGptModelName string = 'gpt-35-turbo'
 
+param deployStorage bool = true
+
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
+var varSubscriptionId = subscription().subscriptionId
+
+var varPrivateEndpointSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingPrivateEndpointSubnetName}'
+var varPrivateDnsZoneResourceGroupId = '/subscriptions/${existingPrivateDnsSubscriptionId}/resourceGroups/${existingPrivateDnsRgName}/providers/Microsoft.Network/privateDnsZones/'
 
 // Organize resources in a resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -73,7 +92,7 @@ resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' ex
 }
 
 // Create an App Service Plan to group applications under the same payment plan and SKU
-module appServicePlan 'core/host/appserviceplan.bicep' = {
+module appServicePlan 'core/host/appserviceplan.bicep' = if (deployWebApp) {
   name: 'appserviceplan'
   scope: resourceGroup
   params: {
@@ -89,7 +108,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 }
 
 // The application frontend
-module backend 'core/host/appservice.bicep' = {
+module backend 'core/host/appservice.bicep' = if (deployWebApp) {
   name: 'web'
   scope: resourceGroup
   params: {
@@ -113,7 +132,7 @@ module backend 'core/host/appservice.bicep' = {
   }
 }
 
-module openAi 'core/ai/cognitiveservices.bicep' = {
+module openAi 'core/ai/cognitiveservices.bicep' = if (deployOpenAiService) {
   name: 'openai'
   scope: openAiResourceGroup
   params: {
@@ -150,7 +169,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
-module formRecognizer 'core/ai/cognitiveservices.bicep' = {
+module formRecognizer 'core/ai/cognitiveservices.bicep' = if (deployFormsRecognizer) {
   name: 'formrecognizer'
   scope: formRecognizerResourceGroup
   params: {
@@ -164,7 +183,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
-module searchService 'core/search/search-services.bicep' = {
+module searchService 'core/search/search-services.bicep' = if (deploySearchService) {
   name: 'search-service'
   scope: searchServiceResourceGroup
   params: {
@@ -183,7 +202,7 @@ module searchService 'core/search/search-services.bicep' = {
   }
 }
 
-module storage 'core/storage/storage-account.bicep' = {
+module storage 'core/storage/storage-account.bicep' = if (deployStorage) {
   name: 'storage'
   scope: storageResourceGroup
   params: {
@@ -204,6 +223,8 @@ module storage 'core/storage/storage-account.bicep' = {
         publicAccess: 'None'
       }
     ]
+    PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
+    PrivateDnsZoneResourceGroupId: varPrivateDnsZoneResourceGroupId
   }
 }
 

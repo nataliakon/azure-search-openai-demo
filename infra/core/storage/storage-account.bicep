@@ -19,6 +19,12 @@ param sku object = { name: 'Standard_LRS' }
 
 param containers array = []
 
+param PrivateEndPointSubnetId string = ''
+param PrivateDnsZoneResourceGroupId string = ''
+
+@description('Do not modify, used to set unique value for resource deployment.')
+param time string = utcNow()
+
 resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: name
   location: location
@@ -35,7 +41,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     minimumTlsVersion: minimumTlsVersion
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
     }
     publicNetworkAccess: publicNetworkAccess
   }
@@ -51,6 +57,26 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
         publicAccess: contains(container, 'publicAccess') ? container.publicAccess : 'None'
       }
     }]
+  }
+}
+
+// private endpoints
+
+module blob_storage_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+  name: 'Deploy-blob-pe-${name}-${time}'
+  params: {
+    groupIds: [
+      'blob'
+    ]
+    name: '${storage.name}-pe'
+    serviceResourceId: storage.id
+    subnetResourceId: PrivateEndPointSubnetId
+    customNetworkInterfaceName: '${storage.name}-pe-nic'
+    privateDnsZoneGroup: {
+      privateDNSResourceIds: [
+        '${PrivateDnsZoneResourceGroupId}/privatelink.blob.core.windows.net'
+      ]
+    }
   }
 }
 
