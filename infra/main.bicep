@@ -238,7 +238,7 @@ module storage 'core/storage/storage-account.bicep' = if (deployStorage) {
 }
 
 // USER ROLES
-module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService && (!empty(principalId))) {
+module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService || (!empty(principalId))) {
   scope: openAiResourceGroup
   name: 'openai-role-user'
   params: {
@@ -248,7 +248,7 @@ module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService && (!
   }
 }
 
-module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecognizer && (!empty(principalId))) {
+module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecognizer || (!empty(principalId))) {
   scope: formRecognizerResourceGroup
   name: 'formrecognizer-role-user'
   params: {
@@ -278,7 +278,7 @@ module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage || 
   }
 }
 
-module searchRoleUser 'core/security/role.bicep' = if (deploySearchService && (!empty(principalId))) {
+module searchRoleUser 'core/security/role.bicep' = if (deploySearchService || (!empty(principalId))) {
   scope: searchServiceResourceGroup
   name: 'search-role-user'
   params: {
@@ -288,7 +288,7 @@ module searchRoleUser 'core/security/role.bicep' = if (deploySearchService && (!
   }
 }
 
-module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchService && (!empty(principalId))) {
+module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchService || (!empty(principalId))) {
   scope: searchServiceResourceGroup
   name: 'search-contrib-role-user'
   params: {
@@ -299,7 +299,7 @@ module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchServic
 }
 
 // SYSTEM IDENTITIES
-module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService && (!empty(principalId))) {
+module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService || (!empty(principalId))) {
   scope: openAiResourceGroup
   name: 'openai-role-backend'
   params: {
@@ -319,7 +319,7 @@ module storageRoleBackend 'core/security/role.bicep' = if (deployStorage || (!em
   }
 }
 
-module searchRoleBackend 'core/security/role.bicep' = if (deploySearchService && (!empty(principalId))) {
+module searchRoleBackend 'core/security/role.bicep' = if (deploySearchService || (!empty(principalId))) {
   scope: searchServiceResourceGroup
   name: 'search-role-backend'
   params: {
