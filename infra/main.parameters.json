@@ -8,6 +8,9 @@
     "location": {
       "value": "canadacentral"
     },
+    "principalId": {
+      "value": ""
+    },
     "existingNetworkSubscriptionId": {
       "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
     },
