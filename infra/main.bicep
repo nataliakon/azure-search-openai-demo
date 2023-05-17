@@ -18,7 +18,7 @@ param existingPrivateEndpointSubnetName string = ''
 param existingPrivateDnsSubscriptionId string = ''
 param existingPrivateDnsRgName string = ''
 
-param deployWebApp bool = false
+param deployWebApp bool = true
 param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
