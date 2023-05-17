@@ -20,6 +20,9 @@
     "existingPrivateEndpointSubnetName": {
       "value": "private-endpoint-subnet"
     },
+    "existingAppServiceSubnetName" :{
+      "value": "appServiceSubnet"
+    },
     "existingPrivateDnsSubscriptionId": {
       "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
     },

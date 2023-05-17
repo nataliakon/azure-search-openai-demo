@@ -46,7 +46,7 @@ resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
 
 // private endpoints 
 
-module  cognitive_service_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+module  search_service_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
   name: 'Deploy-${search.name}-pe-${time}'
   params: {
     tags:tags

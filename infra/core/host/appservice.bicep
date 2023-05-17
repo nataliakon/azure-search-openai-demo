@@ -35,6 +35,17 @@ param use32BitWorkerProcess bool = false
 param ftpsState string = 'FtpsOnly'
 param healthCheckPath string = ''
 
+param PrivateEndPointSubnetId string = ''
+param PrivateDnsZoneResourceGroupId string = ''
+@description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.')
+param virtualNetworkSubnetId string = ''
+
+
+@description('Do not modify, used to set unique value for resource deployment.')
+param time string = utcNow()
+
+
+
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: name
   location: location
@@ -42,6 +53,8 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
   kind: kind
   properties: {
     serverFarmId: appServicePlanId
+    vnetRouteAllEnabled: true
+    virtualNetworkSubnetId: !empty(virtualNetworkSubnetId) ? virtualNetworkSubnetId : any(null)
     siteConfig: {
       linuxFxVersion: linuxFxVersion
       alwaysOn: alwaysOn
@@ -94,6 +107,30 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = if (!(empty(
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightsName)) {
   name: applicationInsightsName
 }
+
+
+// private endpoints 
+
+module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+  name: 'Deploy-${appService.name}-pe-${time}'
+  params: {
+    tags:tags
+    groupIds: [
+      'sites'
+    ]
+    name: '${appService.name}-pe'
+    serviceResourceId: appService.id
+    subnetResourceId: PrivateEndPointSubnetId
+    customNetworkInterfaceName: '${appService.name}-pe-nic'
+    privateDnsZoneGroup: {
+      privateDNSResourceIds: [
+        '${PrivateDnsZoneResourceGroupId}scm.privatelink.azurewebsites.net'
+      ]
+    }
+  }
+}
+
+
 
 output identityPrincipalId string = managedIdentity ? appService.identity.principalId : ''
 output name string = appService.name

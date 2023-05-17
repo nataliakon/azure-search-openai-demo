@@ -9,6 +9,7 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
+param existingAppServiceSubnetName string = ''
 param existingNetworkSubscriptionId string = ''
 param existingNetworkName string = ''
 param existingNetworkResourceGroupName string =''
@@ -65,7 +66,7 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 var tags = { 'azd-env-name': environmentName }
 var varSubscriptionId = subscription().subscriptionId
 
-
+var varAppServiceVirtualNetworkSubnetId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingAppServiceSubnetName}'
 var varPrivateEndpointSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingPrivateEndpointSubnetName}'
 var varPrivateDnsZoneResourceGroupId = '/subscriptions/${existingPrivateDnsSubscriptionId}/resourceGroups/${existingPrivateDnsRgName}/providers/Microsoft.Network/privateDnsZones/'
 
@@ -121,6 +122,9 @@ module backend 'core/host/appservice.bicep' = if (deployWebApp) {
     runtimeVersion: '3.10'
     scmDoBuildDuringDeployment: true
     managedIdentity: true
+    virtualNetworkSubnetId: varAppServiceVirtualNetworkSubnetId
+    PrivateDnsZoneResourceGroupId: varPrivateDnsZoneResourceGroupId
+    PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
     appSettings: {
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
       AZURE_STORAGE_CONTAINER: storageContainerName
