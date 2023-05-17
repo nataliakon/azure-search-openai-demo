@@ -258,7 +258,7 @@ module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecogn
   }
 }
 
-module storageRoleUser 'core/security/role.bicep' = if (deployStorage && (!empty(principalId))) {
+module storageRoleUser 'core/security/role.bicep' = if (deployStorage || (!empty(principalId))) {
   scope: storageResourceGroup
   name: 'storage-role-user'
   params: {
@@ -268,7 +268,7 @@ module storageRoleUser 'core/security/role.bicep' = if (deployStorage && (!empty
   }
 }
 
-module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage && (!empty(principalId))) {
+module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage || (!empty(principalId))) {
   scope: storageResourceGroup
   name: 'storage-contribrole-user'
   params: {
@@ -309,7 +309,7 @@ module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService &&
   }
 }
 
-module storageRoleBackend 'core/security/role.bicep' = if (deployStorage && (!empty(principalId))) {
+module storageRoleBackend 'core/security/role.bicep' = if (deployStorage || (!empty(principalId))) {
   scope: storageResourceGroup
   name: 'storage-role-backend'
   params: {
