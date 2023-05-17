@@ -238,7 +238,7 @@ module storage 'core/storage/storage-account.bicep' = if (deployStorage) {
 }
 
 // USER ROLES
-module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService) {
+module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService && (!empty(principalId))) {
   scope: openAiResourceGroup
   name: 'openai-role-user'
   params: {
