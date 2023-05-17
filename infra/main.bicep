@@ -18,13 +18,13 @@ param existingPrivateEndpointSubnetName string = ''
 param existingPrivateDnsSubscriptionId string = ''
 param existingPrivateDnsRgName string = ''
 
-param deployWebApp bool = false
+param deployWebApp bool = true
 param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
 
 
-param deploySearchService bool = false
+param deploySearchService bool = true
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -37,14 +37,14 @@ param storageResourceGroupName string = ''
 param storageResourceGroupLocation string = location
 param storageContainerName string = 'content'
 
-param deployOpenAiService bool = false
+param deployOpenAiService bool = true
 param openAiServiceName string = ''
 param openAiResourceGroupName string = ''
 param openAiResourceGroupLocation string = location
 
 param openAiSkuName string = 'S0'
 
-param deployFormsRecognizer bool = false
+param deployFormsRecognizer bool = true
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
@@ -94,7 +94,7 @@ resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' ex
 }
 
 //Create an App Service Plan to group applications under the same payment plan and SKU
-module appServicePlan 'core/host/appserviceplan.bicep' =  {
+module appServicePlan 'core/host/appserviceplan.bicep' = if (deployWebApp) {
   name: 'appserviceplan'
   scope: resourceGroup
   params: {
@@ -110,7 +110,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' =  {
 }
 
 // The application frontend
-module backend 'core/host/appservice.bicep' =  {
+module backend 'core/host/appservice.bicep' = if (deployWebApp) {
   name: 'web'
   scope: resourceGroup
   params: {
@@ -128,7 +128,7 @@ module backend 'core/host/appservice.bicep' =  {
     appSettings: {
       AZURE_STORAGE_ACCOUNT: storage.outputs.name
       AZURE_STORAGE_CONTAINER: storageContainerName
-     // AZURE_OPENAI_SERVICE: openAi.outputs.name
+      AZURE_OPENAI_SERVICE: openAi.outputs.name
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
       AZURE_OPENAI_GPT_DEPLOYMENT: gptDeploymentName
@@ -171,6 +171,8 @@ module openAi 'core/ai/cognitiveservices.bicep' = if (deployOpenAiService) {
         }
       }
     ]
+    PrivateEndPointSubnetId: varPrivateEndpointSubnetResourceId
+    PrivateDnsZoneResourceGroupId: '${varPrivateDnsZoneResourceGroupId}privatelink.openai.azure.com'
   }
 }
 
