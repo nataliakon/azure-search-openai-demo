@@ -18,13 +18,13 @@ param existingPrivateEndpointSubnetName string = ''
 param existingPrivateDnsSubscriptionId string = ''
 param existingPrivateDnsRgName string = ''
 
-param deployWebApp bool = true
+param deployWebApp bool = false
 param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
 
 
-param deploySearchService bool = true
+param deploySearchService bool = false
 param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
@@ -44,7 +44,7 @@ param openAiResourceGroupLocation string = location
 
 param openAiSkuName string = 'S0'
 
-param deployFormsRecognizer bool = true
+param deployFormsRecognizer bool = false
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
@@ -248,7 +248,7 @@ module openAiRoleUser 'core/security/role.bicep' = if (deployOpenAiService && (!
   }
 }
 
-module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecognizer) {
+module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecognizer && (!empty(principalId))) {
   scope: formRecognizerResourceGroup
   name: 'formrecognizer-role-user'
   params: {
@@ -258,7 +258,7 @@ module formRecognizerRoleUser 'core/security/role.bicep' = if (deployFormsRecogn
   }
 }
 
-module storageRoleUser 'core/security/role.bicep' = if (deployStorage) {
+module storageRoleUser 'core/security/role.bicep' = if (deployStorage && (!empty(principalId))) {
   scope: storageResourceGroup
   name: 'storage-role-user'
   params: {
@@ -268,7 +268,7 @@ module storageRoleUser 'core/security/role.bicep' = if (deployStorage) {
   }
 }
 
-module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage) {
+module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage && (!empty(principalId))) {
   scope: storageResourceGroup
   name: 'storage-contribrole-user'
   params: {
@@ -278,7 +278,7 @@ module storageContribRoleUser 'core/security/role.bicep' = if (deployStorage) {
   }
 }
 
-module searchRoleUser 'core/security/role.bicep' = if (deploySearchService) {
+module searchRoleUser 'core/security/role.bicep' = if (deploySearchService && (!empty(principalId))) {
   scope: searchServiceResourceGroup
   name: 'search-role-user'
   params: {
@@ -288,7 +288,7 @@ module searchRoleUser 'core/security/role.bicep' = if (deploySearchService) {
   }
 }
 
-module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchService) {
+module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchService && (!empty(principalId))) {
   scope: searchServiceResourceGroup
   name: 'search-contrib-role-user'
   params: {
@@ -299,7 +299,7 @@ module searchContribRoleUser 'core/security/role.bicep' = if (deploySearchServic
 }
 
 // SYSTEM IDENTITIES
-module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService) {
+module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService && (!empty(principalId))) {
   scope: openAiResourceGroup
   name: 'openai-role-backend'
   params: {
@@ -309,7 +309,7 @@ module openAiRoleBackend 'core/security/role.bicep' = if (deployOpenAiService) {
   }
 }
 
-module storageRoleBackend 'core/security/role.bicep' = if (deployStorage) {
+module storageRoleBackend 'core/security/role.bicep' = if (deployStorage && (!empty(principalId))) {
   scope: storageResourceGroup
   name: 'storage-role-backend'
   params: {
@@ -319,7 +319,7 @@ module storageRoleBackend 'core/security/role.bicep' = if (deployStorage) {
   }
 }
 
-module searchRoleBackend 'core/security/role.bicep' = if (deploySearchService) {
+module searchRoleBackend 'core/security/role.bicep' = if (deploySearchService && (!empty(principalId))) {
   scope: searchServiceResourceGroup
   name: 'search-role-backend'
   params: {
