@@ -94,7 +94,7 @@ resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' ex
 }
 
 //Create an App Service Plan to group applications under the same payment plan and SKU
-module appServicePlan 'core/host/appserviceplan.bicep' = if (deployWebApp) {
+module appServicePlan 'core/host/appserviceplan.bicep' =  {
   name: 'appserviceplan'
   scope: resourceGroup
   params: {
@@ -110,7 +110,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = if (deployWebApp) {
 }
 
 // The application frontend
-module backend 'core/host/appservice.bicep' = if (deployWebApp) {
+module backend 'core/host/appservice.bicep' =  {
   name: 'web'
   scope: resourceGroup
   params: {
