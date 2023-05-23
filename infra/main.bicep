@@ -9,6 +9,20 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
+param dsvmName string = ''
+param deployDSVM bool = true
+param vmSize string = 'Standard_D2s_v5'
+param computeSubnetName string = ''
+
+@description('Virtual machine admin username')
+param adminUsername string
+
+@secure()
+@minLength(8)
+@description('Virtual machine admin password')
+param adminPassword string
+
+
 param existingAppServiceSubnetName string = ''
 param existingNetworkSubscriptionId string = ''
 param existingNetworkName string = ''
@@ -68,6 +82,7 @@ var varSubscriptionId = subscription().subscriptionId
 
 var varAppServiceVirtualNetworkSubnetId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingAppServiceSubnetName}'
 var varPrivateEndpointSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingPrivateEndpointSubnetName}'
+var varComputeSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${computeSubnetName}'
 var varPrivateDnsZoneResourceGroupId = '/subscriptions/${existingPrivateDnsSubscriptionId}/resourceGroups/${existingPrivateDnsRgName}/providers/Microsoft.Network/privateDnsZones/'
 
 // Organize resources in a resource group
@@ -91,6 +106,21 @@ resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-
 
 resource storageResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(storageResourceGroupName) && deployStorage) {
   name: !empty(storageResourceGroupName) ? storageResourceGroupName : resourceGroup.name
+}
+
+
+//Provision the DSVM
+
+module provisionDSVM 'core/dsvmjumpbox/dsvm.bicep' = if(deployDSVM) {
+  name: 'Deploy-DSVM'
+  scope: resourceGroup
+  params:{
+    adminPassword: adminPassword
+    adminUsername: adminUsername
+    subnetId: varComputeSubnetResourceId
+    virtualMachineName: !empty(dsvmName) ? dsvmName : '${abbrs.computeVirtualMachines}${resourceToken}'
+    vmSizeParameter: vmSize
+  }
 }
 
 //Create an App Service Plan to group applications under the same payment plan and SKU
@@ -335,21 +365,21 @@ output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
 
-//output AZURE_OPENAI_SERVICE string = openAi.outputs.name
+output AZURE_OPENAI_SERVICE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
 output AZURE_OPENAI_GPT_DEPLOYMENT string = gptDeploymentName
 output AZURE_OPENAI_CHATGPT_DEPLOYMENT string = chatGptDeploymentName
 
-//output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
+output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
 
 output AZURE_SEARCH_INDEX string = searchIndexName
-//output AZURE_SEARCH_SERVICE string = searchService.outputs.name
+output AZURE_SEARCH_SERVICE string = searchService.outputs.name
 output AZURE_SEARCH_SERVICE_RESOURCE_GROUP string = searchServiceResourceGroup.name
 
 output AZURE_STORAGE_ACCOUNT string = storage.outputs.name
 output AZURE_STORAGE_CONTAINER string = storageContainerName
 output AZURE_STORAGE_RESOURCE_GROUP string = storageResourceGroup.name
 
-//output BACKEND_URI string = backend.outputs.uri
+output BACKEND_URI string = backend.outputs.uri
 output environmentOutput object = environment().suffixes

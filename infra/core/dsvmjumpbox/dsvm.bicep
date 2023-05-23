@@ -5,8 +5,8 @@ param location string = resourceGroup().location
 @description('Resource ID of the subnet')
 param subnetId string
 
-@description('Network Security Group Resource ID')
-param networkSecurityGroupId string
+//@description('Network Security Group Resource ID')
+//param networkSecurityGroupId string
 
 @description('Virtual machine name')
 param virtualMachineName string
@@ -39,9 +39,9 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2022-07-01' = {
         }
       }
     ]
-    networkSecurityGroup: {
-      id: networkSecurityGroupId
-    }
+ //   networkSecurityGroup: {
+      //id: networkSecurityGroupId
+   // }
   }
 }
 
