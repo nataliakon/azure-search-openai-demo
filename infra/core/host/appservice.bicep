@@ -111,7 +111,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 
 // private endpoints 
 
-module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+module  app_scm_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
   name: 'Deploy-${appService.name}-pe-${time}'
   params: {
     tags:tags
@@ -131,6 +131,24 @@ module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' 
 }
 
 
+module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+  name: 'Deploy-${appService.name}-pe-${time}'
+  params: {
+    tags:tags
+    groupIds: [
+      'sites'
+    ]
+    name: '${appService.name}-pe'
+    serviceResourceId: appService.id
+    subnetResourceId: PrivateEndPointSubnetId
+    customNetworkInterfaceName: '${appService.name}-pe-nic'
+    privateDnsZoneGroup: {
+      privateDNSResourceIds: [
+        '${PrivateDnsZoneResourceGroupId}privatelink.azurewebsites.net'
+      ]
+    }
+  }
+}
 
 output identityPrincipalId string = managedIdentity ? appService.identity.principalId : ''
 output name string = appService.name
