@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentName": {
-      "value": "azmin25"
+      "value": "azmin35"
     },
     "location": {
-      "value": "canadacentral"
+      "value": "eastus"
     },
     "principalId": {
       "value": ""
@@ -21,7 +21,7 @@
       "value": "AIRocks2023!"
     },
     "existingNetworkName":{
-      "value": "data-vnet"
+      "value": "data-vnet-es"
     },
     "existingNetworkResourceGroupName": {
       "value": "rg-hub-networking"
