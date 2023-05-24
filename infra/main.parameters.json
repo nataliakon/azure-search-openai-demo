@@ -14,6 +14,12 @@
     "existingNetworkSubscriptionId": {
       "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
     },
+    "adminUsername":{
+      "value": "azadmin"
+    },
+    "adminPassword": {
+      "value": "AIRocks2023!"
+    },
     "existingNetworkName":{
       "value": "data-vnet"
     },
@@ -21,6 +27,9 @@
       "value": "rg-hub-networking"
     },
     "existingPrivateEndpointSubnetName": {
+      "value": "private-endpoint-subnet"
+    },
+    "existingComputeSubnetName": {
       "value": "private-endpoint-subnet"
     },
     "existingAppServiceSubnetName" :{

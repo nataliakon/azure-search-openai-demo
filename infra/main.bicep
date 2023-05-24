@@ -12,7 +12,7 @@ param location string
 param dsvmName string = ''
 param deployDSVM bool = true
 param vmSize string = 'Standard_D2s_v5'
-param computeSubnetName string = ''
+param existingComputeSubnetName string = ''
 
 @description('Virtual machine admin username')
 param adminUsername string
@@ -82,7 +82,7 @@ var varSubscriptionId = subscription().subscriptionId
 
 var varAppServiceVirtualNetworkSubnetId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingAppServiceSubnetName}'
 var varPrivateEndpointSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingPrivateEndpointSubnetName}'
-var varComputeSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${computeSubnetName}'
+var varComputeSubnetResourceId = '/subscriptions/${existingNetworkSubscriptionId}/resourceGroups/${existingNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${existingNetworkName}/subnets/${existingComputeSubnetName}'
 var varPrivateDnsZoneResourceGroupId = '/subscriptions/${existingPrivateDnsSubscriptionId}/resourceGroups/${existingPrivateDnsRgName}/providers/Microsoft.Network/privateDnsZones/'
 
 // Organize resources in a resource group
