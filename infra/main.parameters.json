@@ -3,52 +3,76 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentName": {
-      "value": "azmin35"
+      "value": "${AZURE_ENV_NAME}"
     },
     "location": {
-      "value": "eastus"
+      "value": "${AZURE_LOCATION}"
     },
     "principalId": {
-      "value": "f62f2e9f-a8b5-492a-baaf-41f942b1d1bc"
+      "value": "${AZURE_PRINCIPAL_ID}"
     },
     "existingNetworkSubscriptionId": {
-      "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
+      "value": "${AZURE_VNET_SUBSCRIPTION_ID}"
     },
     "adminUsername":{
-      "value": "azadmin"
+      "value": "${AZURE_DSVM_ADMIN_USERNAME}"
     },
     "adminPassword": {
-      "value": "AIRocks2023!"
+      "value": "${AZURE_DSVM_ADMIN_PASSWORD}"
     },
     "existingNetworkName":{
-      "value": "data-vnet-es"
+      "value": "${AZURE_VNET_NAME}"
     },
     "existingNetworkResourceGroupName": {
-      "value": "rg-hub-networking"
+      "value": "${AZURE_VNET_RESOURCE_GROUP}"
     },
     "existingPrivateEndpointSubnetName": {
-      "value": "private-endpoint-subnet"
+      "value": "${AZURE_PRIVATE_ENDPOINT_SUBNET}"
     },
     "existingComputeSubnetName": {
-      "value": "private-endpoint-subnet"
+      "value": "${AZURE_COMPUTE_SUBNET}"
     },
     "existingAppServiceSubnetName" :{
-      "value": "appServiceSubnet"
+      "value": "${AZURE_APP_SERVICE_SUBNET}"
     },
     "existingPrivateDnsSubscriptionId": {
-      "value": "f013bc3f-1407-4b68-a977-9f22ef438677"
+      "value": "${AZURE_PRIVATE_DNS_SUBSCRIPTION_ID}"
     },
     "existingPrivateDnsRgName": {
-      "value": "rg-dns"
+      "value": "${AZURE_PRIVATE_DNS_RESOURCE_GROUP}"
+    },
+    "openAiServiceName": {
+      "value": "${AZURE_OPENAI_SERVICE}"
+    },
+    "openAiResourceGroupName": {
+      "value": "${AZURE_OPENAI_RESOURCE_GROUP}"
     },
     "openAiSkuName": {
       "value": "S0"
     },
+    "formRecognizerServiceName": {
+      "value": "${AZURE_FORMRECOGNIZER_SERVICE}"
+    },
+    "formRecognizerResourceGroupName": {
+      "value": "${AZURE_FORMRECOGNIZER_RESOURCE_GROUP}"
+    },
     "formRecognizerSkuName": {
       "value": "S0"
     },
+    "searchServiceName": {
+      "value": "${AZURE_SEARCH_SERVICE}"
+    },
+    "searchServiceResourceGroupName": {
+      "value": "${AZURE_SEARCH_SERVICE_RESOURCE_GROUP}"
+    },
     "searchServiceSkuName": {
       "value": "standard"
+    },
+    "storageAccountName": {
+      "value": "${AZURE_STORAGE_ACCOUNT}"
+    },
+    "storageResourceGroupName": {
+      "value": "${AZURE_STORAGE_RESOURCE_GROUP}"
     }
   }
 }
