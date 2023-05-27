@@ -112,7 +112,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 // private endpoints 
 
 module  app_scm_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
-  name: 'Deploy-${appService.name}-pe-${time}'
+  name: 'Deploy-${appService.name}-scm-pe-${time}'
   params: {
     tags:tags
     groupIds: [
@@ -133,6 +133,7 @@ module  app_scm_private_endpoint '../Microsoft.Network/privateEndpoints/main.bic
 
 module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
   name: 'Deploy-${appService.name}-pe-${time}'
+  dependsOn:[ app_scm_private_endpoint ]
   params: {
     tags:tags
     groupIds: [
