@@ -165,6 +165,7 @@ module backend 'core/host/appservice.bicep' = if (deployWebApp) {
       AZURE_OPENAI_CHATGPT_DEPLOYMENT: chatGptDeploymentName
     }
   }
+  dependsOn:[appServicePlan]
 }
 
 module openAi 'core/ai/cognitiveservices.bicep' = if (deployOpenAiService) {
