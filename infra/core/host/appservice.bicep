@@ -111,29 +111,29 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 
 // private endpoints 
 
-module  app_scm_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
-  name: 'Deploy-${appService.name}-scm-pe-${time}'
-  params: {
-    tags:tags
-    groupIds: [
-      'sites'
-    ]
-    name: '${appService.name}-pe'
-    serviceResourceId: appService.id
-    subnetResourceId: PrivateEndPointSubnetId
-    customNetworkInterfaceName: '${appService.name}-pe-nic'
-    privateDnsZoneGroup: {
-      privateDNSResourceIds: [
-        '${PrivateDnsZoneResourceGroupId}scm.privatelink.azurewebsites.net'
-      ]
-    }
-  }
-}
+// module  app_scm_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
+//   name: 'Deploy-${appService.name}-scm-pe-${time}'
+//   params: {
+//     tags:tags
+//     groupIds: [
+//       'sites'
+//     ]
+//     name: '${appService.name}-pe'
+//     serviceResourceId: appService.id
+//     subnetResourceId: PrivateEndPointSubnetId
+//     customNetworkInterfaceName: '${appService.name}-pe-nic'
+//     privateDnsZoneGroup: {
+//       privateDNSResourceIds: [
+//         '${PrivateDnsZoneResourceGroupId}privatelink.azurewebsites.net'
+//       ]
+//     }
+//   }
+// }
 
 
 module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' = {
   name: 'Deploy-${appService.name}-pe-${time}'
-  dependsOn:[ app_scm_private_endpoint ]
+  //dependsOn:[ app_scm_private_endpoint ]
   params: {
     tags:tags
     groupIds: [
