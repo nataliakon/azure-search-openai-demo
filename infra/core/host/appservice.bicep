@@ -135,7 +135,7 @@ module  app_private_endpoint '../Microsoft.Network/privateEndpoints/main.bicep' 
   name: 'Deploy-${appService.name}-pe-${time}'
   //dependsOn:[ app_scm_private_endpoint ]
   params: {
-    tags:tags
+   // tags:tags
     groupIds: [
       'sites'
     ]
